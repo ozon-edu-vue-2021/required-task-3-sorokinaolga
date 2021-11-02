@@ -27,14 +27,16 @@
                         v-if="legend.length > 0"
                         class="legend__items"
                     >
-                        <LegendItem
-                            v-for="(item, index) in legend"
-                            :key="index"
-                            :color="item.color"
-                            :text="item.text"
-                            :counter="item.counter"
-                            class="legend__item"
-                        />
+                        <Draggable v-model="legend">
+                            <LegendItem
+                                v-for="(item, index) in legend"
+                                :key="index"
+                                :color="item.color"
+                                :text="item.text"
+                                :counter="item.counter"
+                                class="legend__item"
+                            />
+                        </Draggable>
                     </div>
                     <span
                         v-else
@@ -65,6 +67,7 @@
 </template>
 
 <script>
+import Draggable from "vuedraggable";
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
@@ -83,6 +86,7 @@ export default {
     components: {
         LegendItem,
         PersonCard,
+        Draggable
     },
     data() {
         return {
