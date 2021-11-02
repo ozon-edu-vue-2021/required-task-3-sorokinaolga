@@ -46,6 +46,9 @@
                     </span>
                 </div>
                 <div class="legend__chart">
+                    <div>
+                        {{formatedDate}}
+                    </div>
                     <Doughnut ref="chart" />
                 </div>
             </div>
@@ -67,6 +70,7 @@
 </template>
 
 <script>
+import { format } from "date-fns";
 import Draggable from "vuedraggable";
 import { Doughnut } from "vue-chartjs";
 import LegendItem from "./SideMenu/LegendItem.vue";
@@ -135,6 +139,11 @@ export default {
             this.chart.renderChart(chartData, options);
         }
     },
+    computed: {
+        formatedDate() {
+            return format(new Date(), 'dd.MM.yyyy hh:mm');
+        }
+    }
 };
 </script>
 
