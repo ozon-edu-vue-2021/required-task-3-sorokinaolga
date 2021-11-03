@@ -27,14 +27,16 @@
                         v-if="legend.length > 0"
                         class="legend__items"
                     >
-                        <LegendItem
-                            v-for="(item, index) in legend"
-                            :key="index"
-                            :color="item.color"
-                            :text="item.text"
-                            :counter="item.counter"
-                            class="legend__item"
-                        />
+                        <Draggable v-model="legend">
+                            <LegendItem
+                                v-for="(item, index) in legend"
+                                :key="index"
+                                :color="item.color"
+                                :text="item.text"
+                                :counter="item.counter"
+                                class="legend__item"
+                            />
+                        </Draggable>
                     </div>
                     <span
                         v-else
@@ -44,7 +46,10 @@
                     </span>
                 </div>
                 <div class="legend__chart">
-                    <!-- chart -->
+                    <div>
+                        {{formatedDate}}
+                    </div>
+                    <Doughnut ref="chart" />
                 </div>
             </div>
             <div
@@ -65,6 +70,9 @@
 </template>
 
 <script>
+import { format } from "date-fns";
+import Draggable from "vuedraggable";
+import { Doughnut } from "vue-chartjs";
 import LegendItem from "./SideMenu/LegendItem.vue";
 import PersonCard from "./SideMenu/PersonCard.vue";
 import legend from "@/assets/data/legend.json";
@@ -83,14 +91,20 @@ export default {
     components: {
         LegendItem,
         PersonCard,
+        Draggable,
+        Doughnut,
     },
     data() {
         return {
             legend: [],
+            chart: null,
         };
     },
     created() {
         this.loadLegend();
+    },
+    mounted() {
+        this.makeChart();
     },
     methods: {
         loadLegend() {
@@ -99,7 +113,37 @@ export default {
         closeProfile() {
             this.$emit("update:isUserOpenned", false);
         },
+        makeChart() {
+            const chartData = {
+                labels: this.legend.map((legendItem) => legendItem.text),
+                datasets: [
+                    {
+                        label: 'Легенда',
+                        backgroundColor: this.legend.map(
+                            (legendItem) => legendItem.color
+                        ),
+                        data: this.legend.map(
+                            (legendItem) => legendItem.counter
+                        ),
+                    }
+                ],
+            };
+            const options = {
+                borderWidth: "10px",
+                legend: {
+                    display: false,
+                }
+            };
+
+            this.chart = this.$refs.chart;
+            this.chart.renderChart(chartData, options);
+        }
     },
+    computed: {
+        formatedDate() {
+            return format(new Date(), 'dd.MM.yyyy hh:mm');
+        }
+    }
 };
 </script>
 
