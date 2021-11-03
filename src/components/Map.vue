@@ -3,14 +3,14 @@
         <h3>Карта офиса</h3>
 
         <div
-            v-if="!isLoading"
+            v-show="!isLoading"
             class="map-root"
         >
             <MapSVG ref="svg" />
 
             <TableSVG v-show="false" ref="table" />
         </div>
-        <div v-else>Loading...</div>
+        <div v-if="isLoading">Loading...</div>
     </div>
 </template>
 
@@ -28,7 +28,7 @@ export default {
     },
     data() {
         return {
-            isLoading: false,
+            isLoading: true,
             svg: null,
             g: null,
             tables: [],
@@ -44,6 +44,7 @@ export default {
 
         if(this.g) {
             this.drawTables();
+            this.isLoading = false;
         } else {
             console.log("ERROR");
         }
